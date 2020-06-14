@@ -9,3 +9,5 @@ build/
 .env.staging
 .env.prod
 out/
+storage/
+!storage/.gitkeep
