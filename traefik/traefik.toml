@@ -28,8 +28,8 @@
   email="damienmeur@gmail.com"
   storage="/letsencrypt/acme.json"
   #staging ca-server - for testing SSL CA requests without rate limiting
-  caserver="https://acme-staging-v02.api.letsencrypt.org/directory"
+  #caserver="https://acme-staging-v02.api.letsencrypt.org/directory"
   #production ca-server
-  #caserver = "https://acme-v02.api.letsencrypt.org/directory"
+  caserver = "https://acme-v02.api.letsencrypt.org/directory"
   [certificatesResolvers.letsencrypt.acme.httpChallenge]
     entrypoint="insecure"
