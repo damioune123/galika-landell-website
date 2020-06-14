@@ -31,7 +31,5 @@
   caserver="https://acme-staging-v02.api.letsencrypt.org/directory"
   #production ca-server
   #caserver = "https://acme-v02.api.letsencrypt.org/directory"
-  [certificatesResolvers.letsencrypt.acme.dnsChallenge]
-    provider="ovh"
-    delayBeforeCheck= 0
-    resolvers = ["1.1.1.1:53", "8.8.8.8:53"]
+  [certificatesResolvers.letsencrypt.acme.httpChallenge]
+    entrypoint="web"
