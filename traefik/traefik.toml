@@ -32,4 +32,4 @@
   #production ca-server
   #caserver = "https://acme-v02.api.letsencrypt.org/directory"
   [certificatesResolvers.letsencrypt.acme.httpChallenge]
-    entrypoint="web"
+    entrypoint="insecure"
