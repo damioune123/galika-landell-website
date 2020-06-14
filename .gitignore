@@ -1,0 +1,11 @@
+.idea/
+.env
+acme.json
+node_modules/
+*.log
+build/
+.next/
+.env.local
+.env.staging
+.env.prod
+out/

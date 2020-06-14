@@ -1,0 +1,5 @@
+{
+  "name": "Migrate prod to staging",
+  "description": "This script will migrate prod to staging database and replace staging storage content with the prod one",
+  "script_path": "/app/scripts/migrate-prod-to-staging.sh"
+}

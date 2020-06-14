@@ -1,0 +1,5 @@
+{
+  "name": "Static Site generation for production",
+  "description": "This script will build the frontend for production with Next.js SSG",
+  "script_path": "/app/scripts/build-ssg-prod.sh"
+}

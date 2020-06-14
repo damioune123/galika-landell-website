@@ -1,0 +1,37 @@
+[log]
+  level = "DEBUG"
+
+[global]
+  sendAnonymousUsage = false
+
+[entryPoints]
+  [entryPoints.insecure]
+    address = ":80"
+  [entryPoints.secure]
+    address = ":443"
+
+[api]
+  dashboard = true
+  insecure = false
+
+[providers]
+  [providers.docker]
+    endpoint ="unix:///var/run/docker.sock"
+    watch = true
+    exposedByDefault = true
+    swarmMode = false
+    network="web"
+  [providers.file]
+    directory = "/dynamic/"
+
+[certificatesResolvers.letsencrypt.acme]
+  email="damienmeur@gmail.com"
+  storage="/letsencrypt/acme.json"
+  #staging ca-server - for testing SSL CA requests without rate limiting
+  caserver="https://acme-staging-v02.api.letsencrypt.org/directory"
+  #production ca-server
+  #caserver = "https://acme-v02.api.letsencrypt.org/directory"
+  [certificatesResolvers.letsencrypt.acme.dnsChallenge]
+    provider="ovh"
+    delayBeforeCheck= 0
+    resolvers = ["1.1.1.1:53", "8.8.8.8:53"]

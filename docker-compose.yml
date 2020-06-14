@@ -1,0 +1,173 @@
+version: '3'
+services:
+  traefik:
+    image: "traefik:v2.2"
+    container_name: "traefik"
+    ports:
+      - "80:80"
+      - "443:443"
+    labels:
+      # Docker labels for enabling Traefik dashboard
+      - "traefik.http.routers.traefik.rule=Host(`${DOMAIN_TRAEFIK}`)"
+      - "traefik.http.routers.traefik.entrypoints=secure"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      - "traefik.http.middlewares.admin-basicauth.basicauth.usersfile=/admin-users.txt"
+      - "traefik.http.middlewares.admin-basicauth.basicauth.headerField=X-WebAuth-User"
+    environment:
+      - "OVH_ENDPOINT=${OVH_ENDPOINT}"
+      - "OVH_APPLICATION_KEY=${OVH_APPLICATION_KEY}"
+      - "OVH_APPLICATION_SECRET=${OVH_APPLICATION_SECRET}"
+      - "OVH_CONSUMER_KEY=${OVH_CONSUMER_KEY}"
+    networks:
+      - web
+    volumes:
+      - "./traefik/traefik.toml:/traefik.toml"
+      - "./traefik/letsencrypt:/letsencrypt/"
+      - "./traefik/dynamic:/dynamic/"
+      - "./traefik/admin-users.txt:/admin-users.txt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  express_prod:
+    build:
+      context: ./frontend
+      dockerfile: ./docker/production/Dockerfile
+    networks:
+      - web
+    depends_on:
+      - directus_prod
+    labels:
+      - "traefik.http.routers.staging_frontend.rule=Host(`${DOMAIN_EXPRESS_PROD_1}`, `${DOMAIN_EXPRESS_PROD_2}`, `${DOMAIN_EXPRESS_PROD_3}`, `${DOMAIN_EXPRESS_PROD_4}`, `${DOMAIN_EXPRESS_PROD_5}`, `${DOMAIN_EXPRESS_PROD_6}`)"
+      - "traefik.http.routers.staging_frontend.entrypoints=secure"
+      - "traefik.http.routers.staging_frontend.tls.certresolver=letsencrypt"
+  express_staging:
+    build:
+      context: ./frontend
+      dockerfile: ./docker/staging/Dockerfile
+    networks:
+      - web
+    depends_on:
+      - directus_staging
+    labels:
+      - "traefik.http.routers.production_frontend.rule=Host(`${DOMAIN_EXPRESS_STAGING}`)"
+      - "traefik.http.routers.production_frontend.entrypoints=secure"
+      - "traefik.http.routers.production_frontend.tls.certresolver=letsencrypt"
+  directus_prod:
+    build:
+      context: ./directus
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./directus/prod/storage:/var/directus/public/uploads
+    networks:
+      - web
+      - db_network
+    labels:
+      - "traefik.http.routers.${CONTAINER_DIRECTUS_NAME_PROD}.rule=Host(`${DOMAIN_DIRECTUS_PROD}`)"
+      - "traefik.http.routers.${CONTAINER_DIRECTUS_NAME_PROD}.entrypoints=secure"
+      - "traefik.http.routers.${CONTAINER_DIRECTUS_NAME_PROD}.tls.certresolver=letsencrypt"
+    environment:
+      - DIRECTUS_DATABASE_USERNAME=${MYSQL_USER_PROD}
+      - DIRECTUS_DATABASE_PASSWORD=${MYSQL_PASSWORD_PROD}
+      - DIRECTUS_DATABASE_NAME=${MYSQL_DATABASE_PROD}
+      - DIRECTUS_DATABASE_HOST=${CONTAINER_DB_NAME_PROD}
+      - DIRECTUS_DATABASE_PORT=3306
+      - DIRECTUS_AUTH_SECRETKEY=${AUTH_SECRET_DIRECTUS_PROD}
+      - DIRECTUS_AUTH_PUBLICKEY=${AUTH_PUBLIC_DIRECTUS_PROD}
+    depends_on:
+      - mariadb
+  directus_staging:
+    build:
+      context: ./directus
+      dockerfile: Dockerfile
+    container_name:  ${CONTAINER_DIRECTUS_NAME_STAGING}
+    restart: always
+    volumes:
+      - ./directus/staging/storage:/var/directus/public/uploads
+    networks:
+      - web
+      - db_network
+    labels:
+      - "traefik.http.routers.${CONTAINER_DIRECTUS_NAME_STAGING}.rule=Host(`${DOMAIN_DIRECTUS_STAGING}`)"
+      - "traefik.http.routers.${CONTAINER_DIRECTUS_NAME_STAGING}.entrypoints=secure"
+      - "traefik.http.routers.${CONTAINER_DIRECTUS_NAME_STAGING}.tls.certresolver=letsencrypt"
+    environment:
+      - DIRECTUS_DATABASE_USERNAME=${MYSQL_USER_STAGING}
+      - DIRECTUS_DATABASE_PASSWORD=${MYSQL_PASSWORD_STAGING}
+      - DIRECTUS_DATABASE_NAME=${MYSQL_DATABASE_STAGING}
+      - DIRECTUS_DATABASE_HOST=${CONTAINER_DB_NAME_STAGING}
+      - DIRECTUS_DATABASE_PORT=3306
+      - DIRECTUS_AUTH_SECRETKEY=${AUTH_SECRET_DIRECTUS_STAGING}
+      - DIRECTUS_AUTH_PUBLICKEY=${AUTH_PUBLIC_DIRECTUS_STAGING}
+    depends_on:
+      - mariadb
+  mariadb:
+    container_name: ${CONTAINER_DB_NAME_MARIADB}
+    image: mariadb:latest
+    restart: unless-stopped
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - db_network
+    labels:
+      - "traefik.enable=false"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_MARIADB}
+      MYSQL_DATABASE: ${MYSQL_DATABASE_MARIADB}
+      MYSQL_USER: ${MYSQL_USER_MARIADB}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD_MARIADB}
+  adminer:
+    image: adminer:4.6.3-standalone
+    labels:
+      - "traefik.http.routers.adminer.rule=Host(`${DOMAIN_ADMINER}`)"
+      - "traefik.http.routers.adminer.entrypoints=secure"
+      - "traefik.http.routers.adminer.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.adminer.middlewares=admin-basicauth"
+    networks:
+      - db_network
+      - web
+    depends_on:
+      - mariadb
+  buggy-scripts:
+    build:
+      context: ./buggy
+      dockerfile: Dockerfile
+    container_name: "buggy-scripts"
+    depends_on:
+      - express_prod
+    networks:
+      - web
+    labels:
+      - "traefik.http.routers.buggy-scripts.rule=Host(`${DOMAIN_BUGGY}`)"
+      - "traefik.http.routers.buggy-scripts.entrypoints=secure"
+      - "traefik.http.routers.buggy-scripts.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.buggy-scripts.middlewares=admin-basicauth"
+    volumes:
+      - ./buggy/conf.json:/app/conf/conf.json
+      - ./buggy/runners/:/app/conf/runners
+      - ./buggy/scripts/:/app/scripts/
+      - ./directus/prod/storage:/prod
+      - ./directus/staging/storage:/staging
+      - /var/run/docker.sock:/var/run/docker.sock
+  cadvisor:
+    image: google/cadvisor:v0.29.0
+    restart: always
+    networks:
+      - web
+    labels:
+      - "traefik.http.routers.cadvisor.rule=Host(`${DOMAIN_CADVISOR}`)"
+      - "traefik.http.routers.cadvisor.entrypoints=secure"
+      - "traefik.http.routers.cadvisor.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.cadvisor.middlewares=admin-basicauth"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+volumes:
+  db:
+
+networks:
+  web:
+    external: true
+  db_network:
+    external: true

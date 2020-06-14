@@ -1,0 +1,26 @@
+{
+  "name": "Create a custom backup",
+  "description": "This script aims to create a backup of either prod or staging database (and related assets) to mega.nz. Note that the prod is automatically backup every day, (with a maximum of 20 automatic backup, older ones are automatically deleted and 10 custom backup)",
+  "script_path": "/app/scripts/backup-to-mega-custom.sh",
+  "parameters": [
+    {
+      "name": "Environment",
+      "param": "--environment",
+      "required": true,
+      "type": "list",
+      "description": "The environment to backup",
+      "values": [
+        "prod",
+        "staging"
+      ],
+      "env_var": "BACKUP_ENVIRONMENT"
+    },
+    {
+      "name": "Backup name",
+      "required": true,
+      "param": "--backup_name",
+      "description": "Name of the custom backup",
+      "env_var": "BACKUP_NAME"
+    }
+  ]
+}

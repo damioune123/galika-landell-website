@@ -1,0 +1,5 @@
+{
+  "name": "Migrate staging to prod",
+  "description": "This script will migrate staging to prod database, replace prod storage content with the staging one and build static site for the prod frontend with Next.JS SSG",
+  "script_path": "/app/scripts/migrate-staging-to-prod.sh"
+}
