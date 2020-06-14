@@ -31,7 +31,7 @@ services:
     depends_on:
       - directus_prod
     labels:
-      - "traefik.http.routers.staging_frontend.rule=Host(`${DOMAIN_EXPRESS_PROD_1}`, `${DOMAIN_EXPRESS_PROD_2}`, `${DOMAIN_EXPRESS_PROD_3}`, `${DOMAIN_EXPRESS_PROD_4}`)"
+      - "traefik.http.routers.staging_frontend.rule=Host(`${DOMAIN_EXPRESS_PROD_1}`, `${DOMAIN_EXPRESS_PROD_2}`, `${DOMAIN_EXPRESS_PROD_3}`)"
       - "traefik.http.routers.staging_frontend.entrypoints=secure"
       - "traefik.http.routers.staging_frontend.tls.certresolver=letsencrypt"
   express_staging:
