@@ -12,9 +12,9 @@
  
  ### Installation
 1. Clone the repository on your server:
-    1.1 - Create ssh keys : `ssh-keygen`
-    1.2 - Add the public key from $HOME/.ssh/id_rsa.pub into your github account
-    1.3 - Clone the repo : `git clone git@github.com:damioune123/galika-landell-website.git`
+    - Create ssh keys : `ssh-keygen`
+    - Add the public key from $HOME/.ssh/id_rsa.pub into your github account
+    - Clone the repo : `git clone git@github.com:damioune123/galika-landell-website.git`
 2. Install docker and docker-compose 
 `sudo apt-get install docker docker-compose `
 3. Configure redirection of sub-domains panel to galika-landell.be for :
