@@ -35,7 +35,6 @@
 6. Create the db_network and web docker networks :
  `sudo docker network create db_network  && sudo docker network create web`
 7. Grant all access to the mysql root admin
-
 ` sudo docker ps`
 ` sudo docker exec -ti containerId sh`
 ` mysql -u root -p`
