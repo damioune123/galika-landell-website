@@ -1,6 +1,6 @@
 # Galika-Landell
 ##### This directory contains all requires configurations to run:
- - A Traefik reverse proxy (handling ssl certificates renewals with dns challenge)
+ - A Traefik reverse proxy (handling ssl certificates auto-renewals with let's encrypt http-01 challenge)
  - A mariadb (mysql)
  - A buggy script manager : scripts.galika-landell.be
  - An adminer server (similar to php my admin): adminer.galika-landell.be
@@ -9,11 +9,6 @@
  - Two Directus backends for staging/prod : directus.galika-landell.be and staging.directus.galika-landell.be
  - A nodejs service returning the react app static files (NextJS SSG) for prod env: galika-landell.be
  - A nodejs service rendering instantly the react app (NextJS SSR) for staging env : staging.galika-landell.be
-
- 
- ### Requirements
- - A debian server (tested on debian 10)
- - A domain name and pre-configurer sub-domains (see above for required redirections).
  
  ### Installation
 1. Clone the repository on your server:
@@ -36,10 +31,11 @@
 4. Generate a cert.json empty file for CA 
  `cd traefik && touch letsencrypt/acme.json && chmod 0600 letsencrypt/acme.json`
 
-5. Copy ".env.sample:  into ".env"
+5. Copy ".env.sample:  into ".env" and replace values with yours
 6. Create the db_network and web docker networks :
  `sudo docker network create db_network  && sudo docker network create web`
 7. Grant all access to the mysql root admin
+
 ` sudo docker ps`
 ` sudo docker exec -ti containerId sh`
 ` mysql -u root -p`
