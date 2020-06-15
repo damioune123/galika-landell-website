@@ -46,5 +46,5 @@
  `sudo htpasswd myUserName`
 10. Launch all docker services
  `sudo docker-compose up -d `
-11. Import a staging database dump + assets directory (upon request at damienleur@gmail.com) into mariadb
+11. Import a staging database dump + assets directory (upon request at damienmeur@gmail.com) into mariadb
 12. Run the migrate from staging to prod script via the buggy GUI.
