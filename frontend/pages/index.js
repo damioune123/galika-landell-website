@@ -38,9 +38,9 @@ class Index extends React.Component {
   render() {
     return (
         <div className="container">
-            <Navbar />
+            {/*<Navbar />*/}
             <HomePage />
-            <Footer />
+            {/*<Footer />*/}
         </div>);
   }
 }
