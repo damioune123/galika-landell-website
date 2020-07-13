@@ -18,7 +18,7 @@ export default class MyDocument extends Document {
         <meta charSet="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta httpEquiv="X-UA-Compatible" content="ie=edge"/>
-        <title> Nexter - your home, your freedom </title>
+        <title> Galika-Landell </title>
         <link rel="stylesheet" href="/_next/static/style.css" />
         <link rel="icon" href="/_next/static/favicon.png" />
         <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i|Nunito:300,300i" rel="stylesheet"/>
