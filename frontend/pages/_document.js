@@ -20,7 +20,7 @@ export default class MyDocument extends Document {
         <meta httpEquiv="X-UA-Compatible" content="ie=edge"/>
         <title> Galika-Landell </title>
         <link rel="stylesheet" href="/_next/static/style.css" />
-        <link rel="icon" href="/_next/static/favicon.ico" />
+        <link rel="shortcut icon" href="/_next/static/favicon.ico" />
         <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,400i|Nunito:300,300i" rel="stylesheet"/>
         </Head>
         <body>
